@@ -21,6 +21,7 @@ public class AccountMapper {
                 .name(acc.getName())
                 .id(acc.getId())
                 .balance(acc.getBalance())
+                .type(acc.getType())
                 .build();
     }
 }
