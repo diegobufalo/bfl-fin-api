@@ -1,5 +1,6 @@
 package com.bfl_fin.api.controller;
 
+import com.bfl_fin.api.exception.DuplicatedEntityException;
 import com.bfl_fin.api.exception.EmailAlreadyExistsException;
 import com.bfl_fin.api.exception.NotFoundException;
 import com.bfl_fin.api.model.RestErrorModel;
@@ -23,8 +24,15 @@ public class ControllerErrorHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public RestErrorModel handleBindException(NotFoundException e) {
+        log.error(e);
+        return new RestErrorModel(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicatedEntityException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public RestErrorModel handleBindException(DuplicatedEntityException e) {
         log.error(e);
         return new RestErrorModel(e.getMessage());
     }

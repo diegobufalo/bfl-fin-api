@@ -1,10 +1,12 @@
 package com.bfl_fin.api.services.impl;
 
 import com.bfl_fin.api.enums.TransactionType;
+import com.bfl_fin.api.exception.NotFoundException;
 import com.bfl_fin.api.model.Transaction;
 import com.bfl_fin.api.repositories.TransactionRepository;
 import com.bfl_fin.api.services.AccountService;
 import com.bfl_fin.api.services.TransactionService;
+import com.bfl_fin.api.utils.ConstMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +35,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional(readOnly = true)
     public List<Transaction> getByUser(UUID userId, LocalDate start, LocalDate end) {
         return transactionRepo.findByAccountUserIdAndDateBetween(userId, start, end);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Transaction getByAccountIdAndId(Long accountId, Long transactionId) {
+        return transactionRepo.findByAccountIdAndId(accountId, transactionId)
+                .orElseThrow(() -> new NotFoundException(ConstMessages.TRANSACTION_NOT_FOUND));
+
     }
 }

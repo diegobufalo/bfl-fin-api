@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Category {
 
     @Id
@@ -26,4 +27,7 @@ public class Category {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private TransactionType type;
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
 }

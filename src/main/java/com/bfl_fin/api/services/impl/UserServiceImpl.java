@@ -3,9 +3,11 @@ package com.bfl_fin.api.services.impl;
 import com.bfl_fin.api.dtos.request.RegisterRequest;
 import com.bfl_fin.api.enums.Role;
 import com.bfl_fin.api.exception.EmailAlreadyExistsException;
+import com.bfl_fin.api.exception.NotFoundException;
 import com.bfl_fin.api.model.User;
 import com.bfl_fin.api.repositories.UserRepository;
-import com.bfl_fin.api.services.AuthService;
+import com.bfl_fin.api.services.UserService;
+import com.bfl_fin.api.utils.ConstMessages;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,18 +15,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AuthServiceImpl implements AuthService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ConstMessages.USER_NOT_FOUND));
+    }
+
+    @Override
     public User register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Email já está em uso");
+            throw new EmailAlreadyExistsException();
         }
 
         User user = User.builder()
@@ -42,6 +52,6 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(readOnly = true)
     public @NonNull User loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException(ConstMessages.USER_NOT_FOUND + email));
     }
 }

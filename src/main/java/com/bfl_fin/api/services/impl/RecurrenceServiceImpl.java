@@ -23,6 +23,7 @@ public class RecurrenceServiceImpl implements RecurrenceService {
     private final RecurrenceRepository recurrenceRepo;
     private final TransactionService transactionService;
 
+    @Override
     public Recurrence create(Recurrence recurrence) {
         if (recurrence.getNextExecutionDate() == null) {
             recurrence.setNextExecutionDate(recurrence.getStartDate());
@@ -30,8 +31,7 @@ public class RecurrenceServiceImpl implements RecurrenceService {
         return recurrenceRepo.save(recurrence);
     }
 
-    @Scheduled(cron = "0 0 2 * * ?")
-    @Transactional
+    @Scheduled(cron = "0 15 3 * * *")
     public void processActiveRecurrences() {
         LocalDate today = LocalDate.now();
         recurrenceRepo.findAll().stream()
@@ -47,9 +47,9 @@ public class RecurrenceServiceImpl implements RecurrenceService {
         tx.setAmount(r.getAmount());
         tx.setType(r.getAmount().compareTo(BigDecimal.ZERO) > 0 ? TransactionType.INCOME : TransactionType.EXPENSE);
         tx.setDescription("Recurring: " + r.getDescription());
+        tx.setDate(r.getNextExecutionDate());
         transactionService.create(tx);
 
-        // Advance nextExecution
         r.setNextExecutionDate(advanceDate(r.getNextExecutionDate(), r.getFrequency()));
         if (r.getEndDate() != null && r.getNextExecutionDate().isAfter(r.getEndDate())) {
             r.setActive(false);

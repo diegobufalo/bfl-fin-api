@@ -52,9 +52,9 @@ public class AccountController {
         return mapper.toResponse(account);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}/activation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal User user, @PathVariable Long id) {
-        accountService.deleteAccount(user.getId(), id);
+    public void delete(@AuthenticationPrincipal User user, @PathVariable Long id, @RequestParam boolean activationStatus) {
+        accountService.changeActivationStatus(user.getId(), id, activationStatus);
     }
 }

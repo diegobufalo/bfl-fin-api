@@ -14,11 +14,11 @@ public interface AccountService {
 
     Account update(UUID userId, Long accountId, UpdateAccountRequest request);
 
+    void changeActivationStatus(UUID userId, Long accountId, boolean newActivationStatus);
+
     List<Account> getByUser(UUID userId);
 
     Account getByUserIdAndId(UUID userId, Long accountId);
 
     void updateBalance(Long accountId, BigDecimal delta);
-
-    void deleteAccount(UUID userId, Long accountId);
 }

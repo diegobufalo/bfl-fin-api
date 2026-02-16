@@ -34,6 +34,9 @@ public class Account {
     @Column(name = "type", nullable = false)
     private AccountType type;
 
+    @Column(name = "active", nullable = false)
+    private boolean active;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;

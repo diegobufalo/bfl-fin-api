@@ -9,5 +9,8 @@ import java.util.UUID;
 public interface TransactionService {
 
     Transaction create(Transaction transaction);
+
     List<Transaction> getByUser(UUID userId, LocalDate start, LocalDate end);
+
+    Transaction getByAccountIdAndId(Long accountId, Long transactionId);
 }
